@@ -86,7 +86,7 @@ npm run build:electron
 npm run preview
 ```
 
-## � 应用打包配置
+## 📦 应用打包配置
 
 本项目使用 `electron-builder` 进行应用打包，支持生成专业的安装程序。
 
@@ -644,7 +644,7 @@ npm run build:electron
 4. **尝试系统API** → 文件读写、通知等
 5. **打包部署** → 生成桌面应用
 
-## � 快速上手指南
+## 🚀 快速上手指南
 
 ### 5分钟体验 Electron + Vue3
 
@@ -696,7 +696,7 @@ npm run build:electron
 - [Vite 官方文档](https://vitejs.dev/)
 - [Electron Builder 打包工具](https://www.electron.build/)
 
-## �📱 支持的平台
+## 📱 支持的平台
 
 - ✅ Windows
 - ✅ macOS
