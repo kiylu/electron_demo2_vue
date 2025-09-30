@@ -1,0 +1,61 @@
+{
+  "name": "electron_demo2_vue",
+  "version": "1.0.0",
+  "description": "electron + vue3的测试demo",
+  "main": "main.js",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:vite\" \"npm run dev:electron\" --kill-others-on-fail",
+    "dev:vite": "vite",
+    "dev:electron": "wait-on http://localhost:5173 && cross-env NODE_ENV=development electron .",
+    "dev:electron-fast": "cross-env NODE_ENV=development electron .",
+    "build": "vite build",
+    "build:electron": "npm run build && electron-builder",
+    "preview": "vite preview",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kiylu/electron_demo2_vue.git"
+  },
+  "author": "kiylu",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kiylu/electron_demo2_vue/issues"
+  },
+  "homepage": "https://github.com/kiylu/electron_demo2_vue#readme",
+  "build": {
+    "appId": "com.electron.vue3demo",
+    "productName": "Electron Vue3 Demo",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "main.js",
+      "preload.js",
+      "package.json"
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "assets/icon.ico"
+    },
+    "mac": {
+      "target": "dmg",
+      "icon": "assets/icon.icns"
+    },
+    "linux": {
+      "target": "AppImage",
+      "icon": "assets/icon.png"
+    }
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.2.4",
+    "concurrently": "^9.2.1",
+    "cross-env": "^7.0.3",
+    "electron": "^38.2.0",
+    "electron-builder": "^26.0.12",
+    "vite": "^6.3.6",
+    "vue": "^3.5.22",
+    "wait-on": "^8.0.5"
+  }
+}
