@@ -5,45 +5,46 @@ const isDev = process.env.NODE_ENV === 'development';
 // 保持对窗口对象的全局引用，如果你不这样做，当 JavaScript 对象被垃圾回收时，窗口会被自动关闭。
 let mainWindow;
 
+// 我们在 package.json 中已经通过 wait-on 确保了 Vite 服务器已经启动，这里是第二种等待方式，其实可以不需要
 // 等待 Vite 开发服务器启动的函数
-async function waitForVite() {
-  const http = require('http');
-  const maxRetries = 30; // 最多等待30秒
-  let retries = 0;
+// async function waitForVite() {
+//   const http = require('http');
+//   const maxRetries = 30; // 最多等待30秒
+//   let retries = 0;
 
-  return new Promise((resolve) => {
-    const checkServer = () => {
-      const req = http.get('http://localhost:5173', (res) => {
-        resolve(true);
-        req.destroy();
-      });
+//   return new Promise((resolve) => {
+//     const checkServer = () => {
+//       const req = http.get('http://localhost:5173', (res) => {
+//         resolve(true);
+//         req.destroy();
+//       });
 
-      req.on('error', () => {
-        retries++;
-        if (retries < maxRetries) {
-          setTimeout(checkServer, 1000); // 每秒检查一次
-        } else {
-          console.log('警告：Vite 服务器启动超时，将尝试加载页面');
-          resolve(false);
-        }
-      });
+//       req.on('error', () => {
+//         retries++;
+//         if (retries < maxRetries) {
+//           setTimeout(checkServer, 1000); // 每秒检查一次
+//         } else {
+//           console.log('警告：Vite 服务器启动超时，将尝试加载页面');
+//           resolve(false);
+//         }
+//       });
 
-      req.setTimeout(1000, () => {
-        req.destroy();
-      });
-    };
+//       req.setTimeout(1000, () => {
+//         req.destroy();
+//       });
+//     };
 
-    checkServer();
-  });
-}
+//     checkServer();
+//   });
+// }
 
 async function createWindow() {
   // 在开发模式下等待 Vite 服务器启动
-  if (isDev) {
-    console.log('等待 Vite 开发服务器启动...');
-    await waitForVite();
-    console.log('Vite 服务器已准备就绪');
-  }
+  // if (isDev) {
+  //   console.log('等待 Vite 开发服务器启动...');
+  //   await waitForVite();
+  //   console.log('Vite 服务器已准备就绪');
+  // }
 
   // 创建浏览器窗口
   mainWindow = new BrowserWindow({
@@ -116,7 +117,12 @@ app.on('activate', () => {
   }
 });
 
-// 设置应用菜单
+/**
+ * 设置应用菜单
+ * @description Role 是预定义的：Electron 提供了大量预定义的 role
+ * 加了 role 之后，菜单项会自动实现对应功能
+ * 但有些菜单项（如“新建”、“打开”等）需要我们自己实现逻辑（不加 role）
+ */
 const template = [
   {
     label: '文件',
