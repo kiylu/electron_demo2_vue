@@ -240,7 +240,7 @@ npm run build:electron
 | `license` | 许可协议文件路径 | `"LICENSE.txt"` |
 | `welcomePage` | 自定义欢迎页面 | `"build/welcome.html"` |
 
-## �📁 项目结构
+## 📁 项目结构
 
 ```
 electron_demo2_vue/
@@ -683,34 +683,7 @@ const addItem = () => {
 }
 ```
 
-### Q8: 打包时出现图标错误怎么办？
-
-**错误现象：**
-```
-image D:\path\to\icon.ico has unknown format
-```
-
-**解决方案：**
-
-**正确的图标格式要求：**
-| 平台 | 格式 | 推荐尺寸 | 获取方式 |
-|------|------|---------|----------|
-| Windows | `.ico` | 256x256 像素 | [在线转换工具](https://convertio.co/png-ico/) |
-| macOS | `.icns` | 512x512 像素 | 使用 Xcode 或在线工具 |
-| Linux | `.png` | 512x512 像素 | 直接使用 PNG 图片 |
-
-**临时解决方案：**
-如果没有合适的图标，可以移除图标配置：
-```json
-{
-  "win": {
-    "target": "nsis"
-    // 移除 "icon": "assets/icon.ico" 这行
-  }
-}
-```
-
-### Q9: 如何生成不同平台的安装包？
+### Q8: 如何生成不同平台的安装包？
 
 **构建命令：**
 ```bash
@@ -741,7 +714,7 @@ npm run build:electron
 | macOS | `.dmg` | `Electron Vue3 Demo-1.0.0.dmg` |
 | Linux | `.AppImage` | `Electron Vue3 Demo-1.0.0.AppImage` |
 
-### Q10: 安装包太大怎么优化？
+### Q9: 安装包太大怎么优化？
 
 **优化策略表：**
 | 优化方向 | 具体方法 | 预期效果 |
