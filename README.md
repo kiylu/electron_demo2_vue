@@ -86,7 +86,125 @@ npm run build:electron
 npm run preview
 ```
 
-## 📁 项目结构
+## � 应用打包配置
+
+本项目使用 `electron-builder` 进行应用打包，支持生成专业的安装程序。
+
+### 🔧 打包配置详解
+
+#### 基础配置
+```json
+{
+  "appId": "com.electron.vue3demo",           // 应用唯一标识符
+  "productName": "Electron Vue3 Demo",       // 应用显示名称
+  "directories": {
+    "output": "release"                       // 打包输出目录
+  },
+  "files": [                                  // 需要打包的文件
+    "dist/**/*",                             // Vue 构建产物
+    "main.js",                               // Electron 主进程
+    "preload.js",                            // 预加载脚本
+    "package.json"                           // 项目配置
+  ]
+}
+```
+
+#### Windows 安装程序配置 (NSIS)
+
+```json
+{
+  "win": {
+    "target": {
+      "target": "nsis",                      // 使用 NSIS 安装程序
+      "arch": ["x64", "ia32"]               // 支持 64位 和 32位
+    },
+    "requestedExecutionLevel": "asInvoker"   // 不需要管理员权限运行
+  },
+  "nsis": {
+    "oneClick": false,                       // ❌ 禁用一键安装
+    "allowElevation": true,                  // ✅ 安装时允许请求管理员权限
+    "allowToChangeInstallationDirectory": true, // ✅ 允许用户选择安装目录
+    "createDesktopShortcut": true,           // ✅ 创建桌面快捷方式
+    "createStartMenuShortcut": true,         // ✅ 创建开始菜单快捷方式
+    "shortcutName": "Electron Vue3 Demo",   // 🏷️ 快捷方式显示名称
+    "include": "build/installer.nsh"        // 📝 自定义安装脚本
+  }
+}
+```
+
+### 🆚 安装体验对比
+
+| 特性 | 默认配置（一键安装） | 自定义配置（向导安装） |
+|------|-------------------|---------------------|
+| **安装方式** | 点击即安装，无界面 | ✅ 完整安装向导 |
+| **安装路径** | 固定默认位置 | ✅ 用户可自由选择 |
+| **快捷方式** | 自动创建 | ✅ 用户可选择是否创建 |
+| **用户体验** | 简单但无控制权 | ✅ 专业软件级体验 |
+| **安装界面** | 无 | ✅ 欢迎页、进度页、完成页 |
+
+### 🎯 安装程序功能
+
+#### 新的安装流程
+1. **欢迎页面** - 显示应用信息和版本
+2. **许可协议** - 软件使用协议（可选）
+3. **安装目录选择** - 用户可自定义安装路径
+4. **组件选择** - 选择是否创建桌面和开始菜单快捷方式
+5. **安装进度** - 实时显示安装进度
+6. **完成页面** - 安装成功提示
+
+#### 支持的平台
+- **Windows**: NSIS 安装程序 (.exe)
+- **macOS**: DMG 磁盘映像 (.dmg)  
+- **Linux**: AppImage 应用包 (.AppImage)
+
+### 🛠️ 自定义安装脚本
+
+项目包含自定义的 NSIS 脚本 (`build/installer.nsh`)，可以进一步自定义安装行为：
+
+```nsis
+; 自定义安装逻辑
+!macro customInstall
+  DetailPrint "正在安装 Electron Vue3 Demo..."
+!macroend
+
+; 自定义卸载逻辑  
+!macro customUnInstall
+  DetailPrint "正在卸载 Electron Vue3 Demo..."
+!macroend
+```
+
+### 📋 打包命令
+
+```bash
+# 构建 Vue 应用
+npm run build
+
+# 构建并打包 Electron 应用
+npm run build:electron
+
+# 生成的文件位置
+# release/Electron Vue3 Demo Setup 1.0.0.exe - Windows 安装程序
+# release/win-unpacked/ - Windows 免安装版本
+```
+
+### ⚙️ 高级配置选项
+
+如需要更多自定义选项，可以在 `package.json` 的 `build` 字段中添加：
+
+```json
+{
+  "nsis": {
+    "artifactName": "${productName}-${version}-setup.${ext}",  // 自定义文件名
+    "deleteAppDataOnUninstall": true,                         // 卸载时删除应用数据
+    "displayLanguageSelector": true,                          // 显示语言选择器
+    "installerLanguages": ["zh_CN", "en_US"],                // 支持的安装语言
+    "license": "LICENSE.txt",                                 // 许可协议文件
+    "welcomePage": "build/welcome.html"                       // 自定义欢迎页面
+  }
+}
+```
+
+## �📁 项目结构
 
 ```
 electron_demo2_vue/
@@ -463,6 +581,52 @@ const addItem = () => {
 - ✅ 跨平台桌面应用
 - ✅ 无需浏览器运行
 
+### Q6: 为什么安装程序是一键安装，如何让用户选择安装路径？
+**A:** 默认的 `oneClick: true` 配置会创建一键安装程序。要允许用户自定义安装：
+```json
+"nsis": {
+  "oneClick": false,                           // 禁用一键安装
+  "allowToChangeInstallationDirectory": true  // 允许选择安装目录
+}
+```
+
+### Q7: 如何自定义安装程序的外观和行为？
+**A:** 通过 `nsis` 配置可以自定义：
+- **图标**: `installerIcon`, `uninstallerIcon` 
+- **快捷方式**: `createDesktopShortcut`, `createStartMenuShortcut`
+- **脚本**: `include` 指向自定义 `.nsh` 脚本文件
+- **语言**: `installerLanguages` 设置支持的语言
+
+### Q8: 打包时出现图标错误怎么办？
+**A:** 确保图标文件格式正确：
+- **Windows**: 需要 `.ico` 格式（建议256x256像素）
+- **macOS**: 需要 `.icns` 格式  
+- **Linux**: 需要 `.png` 格式
+如果没有合适的图标，可以临时移除图标配置，使用默认图标。
+
+### Q9: 如何生成不同平台的安装包？
+**A:** 
+```bash
+# 仅Windows
+npm run build:electron -- --win
+
+# 仅macOS  
+npm run build:electron -- --mac
+
+# 仅Linux
+npm run build:electron -- --linux
+
+# 所有平台（需要在对应系统上运行）
+npm run build:electron
+```
+
+### Q10: 安装包太大怎么优化？
+**A:** 优化策略：
+- **代码分割**: 使用 Vue 的异步组件
+- **依赖优化**: 移除不必要的 npm 包
+- **资源压缩**: 压缩图片和静态资源
+- **分别打包**: 为不同架构分别生成安装包
+
 ## 🎯 学习建议
 
 ### 对于Vue开发者：
@@ -511,6 +675,15 @@ npm run dev
 5. **查看效果**：
    - 保存文件后应用自动热重载
    - 既有 Vue 的开发体验，又有桌面应用的能力
+
+6. **测试应用打包**（可选）：
+```bash
+# 构建并打包应用
+npm run build:electron
+```
+   - 检查 `release` 目录中生成的安装程序
+   - 双击 `Electron Vue3 Demo Setup 1.0.0.exe` 体验安装过程
+   - 验证可以选择安装路径和快捷方式选项
 
 **恭喜！** 你已经体验了 Electron + Vue3 的完整开发流程！
 

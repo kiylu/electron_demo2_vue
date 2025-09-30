@@ -36,8 +36,20 @@
       "package.json"
     ],
     "win": {
-      "target": "nsis",
-      "icon": "assets/icon.ico"
+      "target": {
+        "target": "nsis",
+        "arch": ["x64", "ia32"]
+      },
+      "requestedExecutionLevel": "asInvoker"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowElevation": true,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Electron Vue3 Demo",
+      "include": "build/installer.nsh"
     },
     "mac": {
       "target": "dmg",

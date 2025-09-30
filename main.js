@@ -56,7 +56,6 @@ async function createWindow() {
       enableRemoteModule: false, // 禁用远程模块
       preload: path.join(__dirname, 'preload.js')
     },
-    icon: path.join(__dirname, 'assets/icon.png'), // 你可以添加一个图标
     show: false // 先不显示，等加载完成后再显示
   });
 
