@@ -95,19 +95,27 @@ npm run preview
 #### 基础配置
 ```json
 {
-  "appId": "com.electron.vue3demo",           // 应用唯一标识符
-  "productName": "Electron Vue3 Demo",       // 应用显示名称
+  "appId": "com.electron.vue3demo",
+  "productName": "Electron Vue3 Demo",
   "directories": {
-    "output": "release"                       // 打包输出目录
+    "output": "release"
   },
-  "files": [                                  // 需要打包的文件
-    "dist/**/*",                             // Vue 构建产物
-    "main.js",                               // Electron 主进程
-    "preload.js",                            // 预加载脚本
-    "package.json"                           // 项目配置
+  "files": [
+    "dist/**/*",
+    "main.js",
+    "preload.js",
+    "package.json"
   ]
 }
 ```
+
+**配置项说明：**
+| 配置项 | 作用 |
+|-------|------|
+| `appId` | 应用唯一标识符，用于系统识别 |
+| `productName` | 应用显示名称，出现在安装程序中 |
+| `directories.output` | 打包输出目录 |
+| `files` | 需要打包的文件和目录 |
 
 #### Windows 安装程序配置 (NSIS)
 
@@ -115,22 +123,40 @@ npm run preview
 {
   "win": {
     "target": {
-      "target": "nsis",                      // 使用 NSIS 安装程序
-      "arch": ["x64", "ia32"]               // 支持 64位 和 32位
+      "target": "nsis",
+      "arch": ["x64", "ia32"]
     },
-    "requestedExecutionLevel": "asInvoker"   // 不需要管理员权限运行
+    "requestedExecutionLevel": "asInvoker"
   },
   "nsis": {
-    "oneClick": false,                       // ❌ 禁用一键安装
-    "allowElevation": true,                  // ✅ 安装时允许请求管理员权限
-    "allowToChangeInstallationDirectory": true, // ✅ 允许用户选择安装目录
-    "createDesktopShortcut": true,           // ✅ 创建桌面快捷方式
-    "createStartMenuShortcut": true,         // ✅ 创建开始菜单快捷方式
-    "shortcutName": "Electron Vue3 Demo",   // 🏷️ 快捷方式显示名称
-    "include": "build/installer.nsh"        // 📝 自定义安装脚本
+    "oneClick": false,
+    "allowElevation": true,
+    "allowToChangeInstallationDirectory": true,
+    "createDesktopShortcut": true,
+    "createStartMenuShortcut": true,
+    "shortcutName": "Electron Vue3 Demo",
+    "include": "build/installer.nsh"
   }
 }
 ```
+
+**Windows 配置说明：**
+| 配置项 | 作用 | 值说明 |
+|-------|------|--------|
+| `win.target.target` | 安装程序类型 | `nsis` = Windows 安装向导 |
+| `win.target.arch` | 支持的架构 | `x64`, `ia32` = 64位和32位 |
+| `win.requestedExecutionLevel` | 运行权限 | `asInvoker` = 不需要管理员权限 |
+
+**NSIS 安装程序配置：**
+| 配置项 | 作用 | 推荐值 |
+|-------|------|--------|
+| `oneClick` | 一键安装模式 | `false` ❌ 禁用，允许用户自定义 |
+| `allowElevation` | 安装时请求管理员权限 | `true` ✅ 允许 |
+| `allowToChangeInstallationDirectory` | 允许选择安装目录 | `true` ✅ 允许用户选择路径 |
+| `createDesktopShortcut` | 创建桌面快捷方式 | `true` ✅ 创建 |
+| `createStartMenuShortcut` | 创建开始菜单快捷方式 | `true` ✅ 创建 |
+| `shortcutName` | 快捷方式显示名称 | 应用名称 |
+| `include` | 自定义安装脚本 | 指向 `.nsh` 脚本文件 |
 
 ### 🆚 安装体验对比
 
@@ -194,15 +220,25 @@ npm run build:electron
 ```json
 {
   "nsis": {
-    "artifactName": "${productName}-${version}-setup.${ext}",  // 自定义文件名
-    "deleteAppDataOnUninstall": true,                         // 卸载时删除应用数据
-    "displayLanguageSelector": true,                          // 显示语言选择器
-    "installerLanguages": ["zh_CN", "en_US"],                // 支持的安装语言
-    "license": "LICENSE.txt",                                 // 许可协议文件
-    "welcomePage": "build/welcome.html"                       // 自定义欢迎页面
+    "artifactName": "${productName}-${version}-setup.${ext}",
+    "deleteAppDataOnUninstall": true,
+    "displayLanguageSelector": true,
+    "installerLanguages": ["zh_CN", "en_US"],
+    "license": "LICENSE.txt",
+    "welcomePage": "build/welcome.html"
   }
 }
 ```
+
+**高级配置说明：**
+| 配置项 | 作用 | 示例值 |
+|-------|------|--------|
+| `artifactName` | 自定义安装包文件名 | `${productName}-${version}-setup.${ext}` |
+| `deleteAppDataOnUninstall` | 卸载时删除应用数据 | `true` |
+| `displayLanguageSelector` | 显示语言选择器 | `true` |
+| `installerLanguages` | 支持的安装语言 | `["zh_CN", "en_US"]` |
+| `license` | 许可协议文件路径 | `"LICENSE.txt"` |
+| `welcomePage` | 自定义欢迎页面 | `"build/welcome.html"` |
 
 ## �📁 项目结构
 
@@ -582,50 +618,171 @@ const addItem = () => {
 - ✅ 无需浏览器运行
 
 ### Q6: 为什么安装程序是一键安装，如何让用户选择安装路径？
-**A:** 默认的 `oneClick: true` 配置会创建一键安装程序。要允许用户自定义安装：
+
+**问题分析：** 默认的 electron-builder 配置会创建一键安装程序，用户无法选择安装路径。
+
+**解决方案：** 修改 NSIS 配置
 ```json
-"nsis": {
-  "oneClick": false,                           // 禁用一键安装
-  "allowToChangeInstallationDirectory": true  // 允许选择安装目录
+{
+  "nsis": {
+    "oneClick": false,
+    "allowToChangeInstallationDirectory": true
+  }
 }
 ```
 
+**配置对比：**
+| 配置 | 一键安装 | 自定义安装 |
+|------|---------|-----------|
+| `oneClick` | `true` | `false` |
+| 用户体验 | 点击即安装 | 完整向导流程 |
+| 安装路径 | 固定默认位置 | 用户可选择 |
+
 ### Q7: 如何自定义安装程序的外观和行为？
-**A:** 通过 `nsis` 配置可以自定义：
-- **图标**: `installerIcon`, `uninstallerIcon` 
-- **快捷方式**: `createDesktopShortcut`, `createStartMenuShortcut`
-- **脚本**: `include` 指向自定义 `.nsh` 脚本文件
-- **语言**: `installerLanguages` 设置支持的语言
+
+**可自定义项目：**
+
+**图标设置：**
+```json
+{
+  "nsis": {
+    "installerIcon": "assets/installer.ico",
+    "uninstallerIcon": "assets/uninstaller.ico",
+    "installerHeaderIcon": "assets/header.ico"
+  }
+}
+```
+
+**快捷方式配置：**
+```json
+{
+  "nsis": {
+    "createDesktopShortcut": true,
+    "createStartMenuShortcut": true,
+    "shortcutName": "我的应用"
+  }
+}
+```
+
+**多语言支持：**
+```json
+{
+  "nsis": {
+    "installerLanguages": ["zh_CN", "en_US", "ja_JP"],
+    "displayLanguageSelector": true
+  }
+}
+```
+
+**自定义脚本：**
+```json
+{
+  "nsis": {
+    "include": "build/installer.nsh"
+  }
+}
+```
 
 ### Q8: 打包时出现图标错误怎么办？
-**A:** 确保图标文件格式正确：
-- **Windows**: 需要 `.ico` 格式（建议256x256像素）
-- **macOS**: 需要 `.icns` 格式  
-- **Linux**: 需要 `.png` 格式
-如果没有合适的图标，可以临时移除图标配置，使用默认图标。
+
+**错误现象：**
+```
+image D:\path\to\icon.ico has unknown format
+```
+
+**解决方案：**
+
+**正确的图标格式要求：**
+| 平台 | 格式 | 推荐尺寸 | 获取方式 |
+|------|------|---------|----------|
+| Windows | `.ico` | 256x256 像素 | [在线转换工具](https://convertio.co/png-ico/) |
+| macOS | `.icns` | 512x512 像素 | 使用 Xcode 或在线工具 |
+| Linux | `.png` | 512x512 像素 | 直接使用 PNG 图片 |
+
+**临时解决方案：**
+如果没有合适的图标，可以移除图标配置：
+```json
+{
+  "win": {
+    "target": "nsis"
+    // 移除 "icon": "assets/icon.ico" 这行
+  }
+}
+```
 
 ### Q9: 如何生成不同平台的安装包？
-**A:** 
+
+**构建命令：**
 ```bash
-# 仅Windows
+# 仅构建 Windows 版本
 npm run build:electron -- --win
 
-# 仅macOS  
+# 仅构建 macOS 版本
 npm run build:electron -- --mac
 
-# 仅Linux
+# 仅构建 Linux 版本
 npm run build:electron -- --linux
 
-# 所有平台（需要在对应系统上运行）
+# 构建所有平台（需要在对应系统上运行）
 npm run build:electron
 ```
 
+**平台限制说明：**
+| 目标平台 | 可构建的系统 | 说明 |
+|---------|-------------|------|
+| Windows | Windows, Linux, macOS | 跨平台构建支持良好 |
+| macOS | 仅 macOS | 需要 Xcode 和代码签名 |
+| Linux | Linux, macOS, Windows | 跨平台构建支持 |
+
+**输出文件类型：**
+| 平台 | 文件格式 | 文件名示例 |
+|------|---------|-----------|
+| Windows | `.exe` | `Electron Vue3 Demo Setup 1.0.0.exe` |
+| macOS | `.dmg` | `Electron Vue3 Demo-1.0.0.dmg` |
+| Linux | `.AppImage` | `Electron Vue3 Demo-1.0.0.AppImage` |
+
 ### Q10: 安装包太大怎么优化？
-**A:** 优化策略：
-- **代码分割**: 使用 Vue 的异步组件
-- **依赖优化**: 移除不必要的 npm 包
-- **资源压缩**: 压缩图片和静态资源
-- **分别打包**: 为不同架构分别生成安装包
+
+**优化策略表：**
+| 优化方向 | 具体方法 | 预期效果 |
+|---------|---------|----------|
+| **代码分割** | 使用 Vue 异步组件 | 减少主包大小 |
+| **依赖清理** | 移除不必要的 npm 包 | 显著减小体积 |
+| **资源压缩** | 压缩图片和静态资源 | 减少资源占用 |
+| **架构分离** | 为不同架构分别打包 | 避免包含多余架构 |
+
+**具体实施：**
+
+**1. Vue 代码分割示例：**
+```javascript
+// 使用异步组件
+const HeavyComponent = defineAsyncComponent(() => 
+  import('./components/HeavyComponent.vue')
+);
+```
+
+**2. 依赖分析命令：**
+```bash
+# 分析包大小
+npm run build
+npx vite-bundle-analyzer dist
+
+# 查看依赖关系
+npm ls --depth=0
+```
+
+**3. 架构特定构建：**
+```bash
+# 仅构建 64 位版本
+npm run build:electron -- --win --x64
+```
+
+**打包大小对比：**
+| 优化程度 | 安装包大小 | 说明 |
+|---------|-----------|------|
+| 未优化 | ~150MB | 包含所有依赖和架构 |
+| 基础优化 | ~80MB | 移除不必要依赖 |
+| 深度优化 | ~50MB | 代码分割 + 资源压缩 |
 
 ## 🎯 学习建议
 
